@@ -2,61 +2,64 @@
 .stack 100h     
 
 .data
-num1 db 'input 1st digit:$'
-num2 db  'input 2nd digit:$'
-result db  'result:$'       
-
+num1 db 'Input 1st digit:$'
+num2 db 'Input 2nd digit:$'
+result db 'The sum of num1 & num2 is: $'
+newline db 10, 13, '$' ; For printing a newline (CRLF)
 
 .code
 main proc
     mov ax,@data
     mov ds,ax
     
+    ; Prompt for first digit
     mov ah,9
     lea dx,num1
     int 21h
     
+    ; Read first digit
     mov ah,1
     int 21h
-    mov bl,al 
-    
-    mov ah,2
-    mov dl,10
+    sub al, '0'      ; Convert ASCII to integer
+    mov bl, al       ; Store in BL
+
+    ; Print newline
+    mov ah,9
+    lea dx, newline
     int 21h
-    mov dl,13
-    int 21h
-    
-    
+
+    ; Prompt for second digit
     mov ah,9
     lea dx,num2
     int 21h
-    
+
+    ; Read second digit
     mov ah,1
     int 21h
-    mov bh,al 
+    sub al, '0'      ; Convert ASCII to integer
+    mov bh, al       ; Store in BH
 
-    mov ah,2
-    mov dl,10
-    int 21h
-    mov dl,13
-    int 21h
-    
+    ; Print newline
     mov ah,9
-    lea dx,result
+    lea dx, newline
     int 21h
-    
-    add bl,bh
-    sub bl,48  
 
+    ; Calculate result (add BL and BH)
+    add bl, bh       ; Add the two digits
+    add bl, '0'      ; Convert back to ASCII
 
-    
-    mov ah,2 
-    mov dl,bl
+    ; Display result
+    mov ah,9
+    lea dx, result
     int 21h
-    
-    
-    exit:
-    mov ah,4ch
+
+    ; Print the result (single digit)
+    mov ah,2
+    mov dl,bl        ; Load result in DL
     int 21h
-    main endp
+
+    ; Exit program
+    mov ah,4Ch
+    int 21h
+main endp
 end main
